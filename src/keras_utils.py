@@ -10,10 +10,10 @@ from src.utils import getWH, nms
 from src.projection_utils import getRectPts, find_T_matrix
 
 
-class DLabel (Label):
+class DLabel (Label):	# inherit from class Label
 
 	def __init__(self,cl,pts,prob):
-		self.pts = pts
+		self.pts = pts	#
 		tl = np.amin(pts,1)
 		br = np.amax(pts,1)
 		Label.__init__(self,cl,tl,br,prob)
@@ -40,10 +40,10 @@ def load_model(path,custom_objects={},verbose=0):
 
 def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 
-	net_stride 	= 2**4
+	net_stride 	= 2**4	# four 2*2 max pooling layers
 	side 		= ((208. + 40.)/2.)/net_stride # 7.75
 
-	Probs = Y[...,0]
+	Probs = Y[...,0]	#  […, 0] = [:, :, :, 0]
 	Affines = Y[...,2:]
 	rx,ry = Y.shape[:2]
 	ywh = Y.shape[1::-1]
@@ -70,7 +70,7 @@ def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 		A[0,0] = max(A[0,0],0.)
 		A[1,1] = max(A[1,1],0.)
 
-		pts = np.array(A*base(vxx,vyy)) #*alpha
+		pts = np.array(A*base(vxx,vyy)) #*alpha # Affine Matrix
 		pts_MN_center_mn = pts*side
 		pts_MN = pts_MN_center_mn + mn.reshape((2,1))
 
@@ -93,7 +93,7 @@ def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 			TLps.append(Ilp)
 
 	return final_labels,TLps
-	
+
 
 def detect_lp(model,I,max_dim,net_step,out_size,threshold):
 
