@@ -41,20 +41,23 @@ def load_model(path,custom_objects={},verbose=0):
 def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 
 	net_stride 	= 2**4	# four 2*2 max pooling layers
-	side 		= ((208. + 40.)/2.)/net_stride # 7.75
+	# Scaling: the LP is scaled so its width matches a value between 40px and 208px
+	side 		= ((208. + 40.)/2.)/net_stride
+	# 7.75 , which is the mean point between the maximum and minimum LP dimensions in the augmented training data divided by the network stride.
 
 	# the first two values of Y are the object/non-object probabilities
 	Probs = Y[...,0]	#  […, 0] = [:, :, :, 0]
 	# the last six values of Y are used to build the local affine transformation T_mn
 	Affines = Y[...,2:]
+
 	rx,ry = Y.shape[:2]
 	ywh = Y.shape[1::-1]
 	iwh = np.array(I.shape[1::-1],dtype=float).reshape((2,1))
 
-	xx,yy = np.where(Probs>threshold)	#
+	xx,yy = np.where(Probs>threshold)
 
 	WH = getWH(I.shape)
-	MN = WH/net_stride	# feature map width & height
+	MN = WH/net_stride	# width & height in feature map
 
 	vxx = vyy = 0.5 #alpha
 
@@ -66,21 +69,25 @@ def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 		affine = Affines[y,x]
 		prob = Probs[y,x]
 
-		mn = np.array([float(x) + .5,float(y) + .5])
+		mn = np.array([float(x) + .5,float(y) + .5])	# The center of the pixel for each point cell (m, n) in the feature map
 
 		A = np.reshape(affine,(2,3))	# Affine Matrix
 		A[0,0] = max(A[0,0],0.)
 		A[1,1] = max(A[1,1],0.)
 
-		pts = np.array(A*base(vxx,vyy)) #*alpha
+		pts = np.array(A*base(vxx,vyy)) #*alpha	# pts => some kind of points
 		pts_MN_center_mn = pts*side
-		pts_MN = pts_MN_center_mn + mn.reshape((2,1))
+		pts_MN = pts_MN_center_mn + mn.reshape((2,1))	# a point affine transformed with respect to the orgin and then moved to (m, n) (?
 
-		pts_prop = pts_MN/MN.reshape((2,1))
+		pts_prop = pts_MN/MN.reshape((2,1)) # MN is the width and height of the pic in feature map
 
-		labels.append(DLabel(0,pts_prop,prob))
+		labels.append(DLabel(0,pts_prop,prob))	# labels with transformed point
 
-	final_labels = nms(labels,.1)
+	final_labels = nms(labels,.1)	# Non Maximum Suppression
+	# Non Maximum Suppression is a computer vision method that selects a single entity out of many overlapping entities
+	# (for example bounding boxes in object detection).
+	# The criteria is usually discarding entities that are below a given probability bound.
+
 	TLps = []
 
 	if len(final_labels):
@@ -88,13 +95,13 @@ def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 		for i,label in enumerate(final_labels):
 
 			t_ptsh 	= getRectPts(0,0,out_size[0],out_size[1])
-			ptsh 	= np.concatenate((label.pts*getWH(Iorig.shape).reshape((2,1)),np.ones((1,4))))
+			ptsh 	= np.concatenate((label.pts*getWH(Iorig.shape).reshape((2,1)),np.ones((1,4))))	# ?? concatenate of different shape ??
 			H 		= find_T_matrix(ptsh,t_ptsh)
-			Ilp 	= cv2.warpPerspective(Iorig,H,out_size,borderValue=.0)
+			Ilp 	= cv2.warpPerspective(Iorig,H,out_size,borderValue=.0)	# Applies a perspective transformation to an image.
 
 			TLps.append(Ilp)
 
-	return final_labels,TLps
+	return final_labels,TLps	# label which includes the center point of LP, the BBx of the LP (?
 
 
 def detect_lp(model,I,max_dim,net_step,out_size,threshold):
@@ -117,4 +124,4 @@ def detect_lp(model,I,max_dim,net_step,out_size,threshold):
 
 	L,TLps = reconstruct(I,Iresized,Yr,out_size,threshold)
 
-	return L,TLps,elapsed
+	return L,TLps,elapsed	# # label which includes the center point of LP, the BBx of the LP (? , and elapsed time
