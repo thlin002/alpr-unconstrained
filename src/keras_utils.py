@@ -43,16 +43,18 @@ def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 	net_stride 	= 2**4	# four 2*2 max pooling layers
 	side 		= ((208. + 40.)/2.)/net_stride # 7.75
 
+	# the first two values of Y are the object/non-object probabilities
 	Probs = Y[...,0]	#  […, 0] = [:, :, :, 0]
+	# the last six values of Y are used to build the local affine transformation T_mn
 	Affines = Y[...,2:]
 	rx,ry = Y.shape[:2]
 	ywh = Y.shape[1::-1]
 	iwh = np.array(I.shape[1::-1],dtype=float).reshape((2,1))
 
-	xx,yy = np.where(Probs>threshold)
+	xx,yy = np.where(Probs>threshold)	#
 
 	WH = getWH(I.shape)
-	MN = WH/net_stride
+	MN = WH/net_stride	# feature map width & height
 
 	vxx = vyy = 0.5 #alpha
 
@@ -66,11 +68,11 @@ def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 
 		mn = np.array([float(x) + .5,float(y) + .5])
 
-		A = np.reshape(affine,(2,3))
+		A = np.reshape(affine,(2,3))	# Affine Matrix
 		A[0,0] = max(A[0,0],0.)
 		A[1,1] = max(A[1,1],0.)
 
-		pts = np.array(A*base(vxx,vyy)) #*alpha # Affine Matrix
+		pts = np.array(A*base(vxx,vyy)) #*alpha
 		pts_MN_center_mn = pts*side
 		pts_MN = pts_MN_center_mn + mn.reshape((2,1))
 
