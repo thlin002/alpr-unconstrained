@@ -56,7 +56,8 @@ if __name__ == '__main__':
 
 				for i,r in enumerate(R):
 
-					cx,cy,w,h = (np.array(r[2])/np.concatenate( (WH,WH) )).tolist()
+					cx,cy,w,h = (np.array(r[2])/np.concatenate( (WH,WH) )).tolist()	
+					# r[2] contains bbx (b.x, b.y, b.w, b.h), rescaled to ratio
 					tl = np.array([cx - w/2., cy - h/2.])
 					br = np.array([cx + w/2., cy + h/2.])
 					label = Label(0,tl,br)
