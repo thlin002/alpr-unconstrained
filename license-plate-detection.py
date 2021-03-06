@@ -53,7 +53,7 @@ if __name__ == '__main__':
 				s = Shape(Llp[0].pts)
 
 				cv2.imwrite('%s/%s_lp.png' % (output_dir,bname),Ilp*255.)	# output license plate image
-				writeShapes('%s/%s_lp.txt' % (output_dir,bname),[s])
+				writeShapes('%s/%s_lp.txt' % (output_dir,bname),[s])	# my guess: 4 vertices (?
 
 	except:
 		traceback.print_exc()
