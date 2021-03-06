@@ -29,13 +29,13 @@ for img_file in img_files:
 
 	Lcar = lread(detected_cars_labels)
 
-	sys.stdout.write('%s' % bname)	#  stdout is used to display output directly to the screen console.
+	sys.stdout.write('%s' % bname)	# stdout is used to display output directly to the screen console.
 
 	if Lcar:
 
 		for i,lcar in enumerate(Lcar):
 
-			draw_label(I,lcar,color=YELLOW,thickness=3)
+			draw_label(I,lcar,color=YELLOW,thickness=3)	# draw bounding box
 
 			lp_label 		= '%s/%s_%dcar_lp.txt'		% (output_dir,bname,i)
 			lp_label_str 	= '%s/%s_%dcar_lp_str.txt'	% (output_dir,bname,i)
