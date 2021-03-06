@@ -101,7 +101,7 @@ def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 
 			TLps.append(Ilp)
 
-	return final_labels,TLps	# label which includes the center point of LP, the BBx of the LP (?
+	return final_labels,TLps	# final_label: array of [cl, tl, br, prob]
 
 
 def detect_lp(model,I,max_dim,net_step,out_size,threshold):
