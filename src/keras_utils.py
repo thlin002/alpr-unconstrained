@@ -14,7 +14,7 @@ class DLabel (Label):	# inherit from class Label
 
 	def __init__(self,cl,pts,prob):
 		self.pts = pts	#
-		tl = np.amin(pts,1)
+		tl = np.amin(pts,1)	# amin(array, axis=1)
 		br = np.amax(pts,1)
 		Label.__init__(self,cl,tl,br,prob)
 
