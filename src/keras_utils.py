@@ -101,7 +101,7 @@ def reconstruct(Iorig,I,Y,out_size,threshold=.9):
 
 			TLps.append(Ilp)
 
-	return final_labels,TLps	# final_label: array of [cl, tl, br, prob], TLps: image of license plate transformed
+	return final_labels,TLps	# final_label: array of [cl, tl, br, prob], TLps: array of image of license plate transformed
 
 
 def detect_lp(model,I,max_dim,net_step,out_size,threshold):
@@ -124,4 +124,4 @@ def detect_lp(model,I,max_dim,net_step,out_size,threshold):
 
 	L,TLps = reconstruct(I,Iresized,Yr,out_size,threshold)
 
-	return L,TLps,elapsed	# L: array of [cl, tl, br, prob], TLps: image of license plate transformed
+	return L,TLps,elapsed	# L: array of [cl, tl, br, prob], TLps: array of image of license plate transformed
