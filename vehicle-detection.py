@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
 					cv2.imwrite('%s/%s_%dcar.png' % (output_dir,bname,i),Icar)
 
-				lwrite('%s/%s_cars.txt' % (output_dir,bname),Lcars)
+				lwrite('%s/%s_cars.txt' % (output_dir,bname),Lcars)	# the data follows i for the order
 
 	except:
 		traceback.print_exc()
