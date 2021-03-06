@@ -49,7 +49,7 @@ for img_file in img_files:
 
 				if isfile(lp_label_str):
 					with open(lp_label_str,'r') as f:
-						lp_str = f.read().strip()
+						lp_str = f.read().strip()	# strip() returns a copy of the string with both leading and trailing characters stripped.
 					llp = Label(0,tl=pts.min(1),br=pts.max(1))
 					write2img(I,llp,lp_str)
 
