@@ -29,7 +29,7 @@ for img_file in img_files:
 
 	Lcar = lread(detected_cars_labels)
 
-	sys.stdout.write('%s' % bname)
+	sys.stdout.write('%s' % bname)	#  stdout is used to display output directly to the screen console.
 
 	if Lcar:
 
