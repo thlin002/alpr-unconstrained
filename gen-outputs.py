@@ -35,7 +35,7 @@ for img_file in img_files:
 
 		for i,lcar in enumerate(Lcar):
 
-			draw_label(I,lcar,color=YELLOW,thickness=3)	# draw bounding box
+			draw_label(I,lcar,color=YELLOW,thickness=3)	# draw bounding box of the detected cars
 
 			lp_label 		= '%s/%s_%dcar_lp.txt'		% (output_dir,bname,i)
 			lp_label_str 	= '%s/%s_%dcar_lp_str.txt'	% (output_dir,bname,i)
@@ -45,7 +45,7 @@ for img_file in img_files:
 				Llp_shapes = readShapes(lp_label)
 				pts = Llp_shapes[0].pts*lcar.wh().reshape(2,1) + lcar.tl().reshape(2,1)
 				ptspx = pts*np.array(I.shape[1::-1],dtype=float).reshape(2,1)
-				draw_losangle(I,ptspx,RED,3)
+				draw_losangle(I,ptspx,RED,3)	# draw bounding box of the detected license plate
 
 				if isfile(lp_label_str):
 					with open(lp_label_str,'r') as f:
